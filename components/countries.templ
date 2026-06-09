@@ -1,0 +1,43 @@
+package components
+
+import "goth-countries/models"
+
+templ Countries(countries []models.Country) {
+  @Base("Countries of the World") {
+    <div class="search  my-2">
+      <input
+        class="outline-none p-2 border-b-2 border-zinc-500 text-zinc-500 placeholder:text-zinc-500"
+        type="search"
+        name="search"
+        hx-get="/search"
+        hx-trigger="keyup changed delay:1s"
+        hx-target="#country-list"
+        hx-swap="outerHTML"
+      />
+    </div>
+
+    @CountryList(countries)
+  }  
+}
+
+templ CountryList(countries []models.Country) {
+    <div id="country-list" class="country-list grid grid-cols-2 md:grid-cols-3 gap-5 place-items-center w-full cursor-pointer">
+      if len(countries) > 0 {
+        for _, country := range countries {
+          <div class="country-item relative p-5 hover:bg-zinc-500 hover:text-zinc-200 transition-all duration-300 ease-in-out rounded-2xl h-full shadow-lg">
+            <h2 class="text-xl font-bold text-center">
+              <a class="absolute top-0 left-0 z-0 w-full h-full bg-transparent cursor-pointer" href={templ.SafeURL("/country/" + country.Name)}></a>
+              {country.Name}
+            </h2>
+
+            <div id='info' class="my-2">
+              <p>Capital: {country.Capital}</p>
+              <p>Continent: {country.Continent}</p>
+            </div>
+          </div>
+        }
+      } else {
+        <p>No countries found.</p>
+      }
+    </div>
+}
